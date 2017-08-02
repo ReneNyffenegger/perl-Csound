@@ -24,28 +24,85 @@ our $VERSION = $Csound::VERSION;
 
 =cut
 #_}
+#_{ Description
+=head1 DESCRIPTION
+
+An orchestra consists of L<instruments|Csound::Instrument>
+
+An orchestra should be created by a L<Csound::Score>.
+
+=over
+
+=item * a header section
+
+The L<header section|http://www.csounds.com/manual/html/OrchTop.html#OrchHeader> specifies global options for instrument performance. It is written with L</_write_header>.
+
+=item * an optional list of user defined opcodes
+
+L<User defined opcodes|http://www.csounds.com/manual/html/OrchUDO.html> are built with the I<opcodes> C<< L<opcode|http://www.csounds.com/manual/html/opcode.html> >> and
+C<< L<endop|http://www.csounds.com/manual/html/endop.html> >>.
+
+=item * instrument definitions
+
+=back
+
+=cut
+#_}
 #_{ Methods
 =head1 METHODS
 =cut
 sub new { #_{
 #_{ POD
 =head2 new
+
+An orchestra should not be created by the end user. The user should rather use a L<Csound::Score>.
+
 =cut
 #_}
 
   my $class = shift;
+
   my $self  = {};
 
   bless $self, $class;
+
+  die unless $self->isa('Csound::Orchestra');
+
+# An orchestra requires some instruments.
+# The key of the hash is the instrument number.
+# The instruments are added with the L</UseInstrument>() method.
+  $self->{instruments} = {};
+
   return $self;
 
 } #_}
+sub use_instrument {
+#_{ POD
+=head2 use_instrument
+
+    $orc -> use_instrument($instr);
+
+Add $instr to the instruments. An instrument can be added multiple times, for example by L<Csound::Score/play>.
+
+=cut
 #_}
+
+  my $self  = shift;
+  my $instr = shift;
+
+  croak "Not an orchestra " unless $self ->isa('Csound::Orchestra');
+  croak "Not an instrument" unless $instr->isa('Csound::Instrument');
+
+  $self->{instruments}{$instr->{nr}} = $instr unless exists $self->{instruments}{$instr->{nr}};
+
+}
 sub write { #_{
 #_{ POD
 =head2 write
 
     $orc->write('filename.orc');
+
+This method should not be called directly by the end user. The end user should call L<Csound::Score/write> instead.
 
 =cut
 #_}
@@ -58,12 +115,13 @@ sub write { #_{
 
   open (my $orc_fh, '>', $orc_filename) or croak "Could not open $orc_filename";
 
-  $self->_write_header($orc_fh);
+  $self->_write_header     ($orc_fh);
+  $self->_write_instruments($orc_fh);
 
   close $orc_fh;
   
 } #_}
-sub _write_header {
+sub _write_header { #_{
 #_{ POD
 =head2 _write_header
 
@@ -87,7 +145,31 @@ nchnls =     2
 0dbfs  =     1
 HEADER
 
-}
+} #_}
+sub _write_instruments { #_{
+#_{ POD
+=head2 _write_instruments
+
+An internal function.
+
+
+=cut
+#_}
+
+  my $self   = shift;
+  croak unless $self->isa('Csound::Orchestra');
+
+  my $fh_orc = shift;
+
+  for my $instr_no (sort keys %{$self->{instruments}}) {
+
+    print $fh_orc "\n" . $self->{instruments}{$instr_no}->orchestra_text();
+
+  }
+
+
+} #_}
+#_}
 #_{ POD: Copyright
 
 =head1 Copyright

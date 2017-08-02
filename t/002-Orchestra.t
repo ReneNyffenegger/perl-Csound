@@ -5,10 +5,21 @@ use Test::More   tests => 2;
 use Test::Files;
 
 use Csound::Orchestra;
+use Csound::Instrument;
 
 my $orc = Csound::Orchestra->new();
+isa_ok($orc, 'Csound::Orchestra');
+
+my $instr_1 = Csound::Instrument->new();
+my $instr_2 = Csound::Instrument->new();
+my $instr_3 = Csound::Instrument->new();
+
+$orc->use_instrument($instr_1);
+$orc->use_instrument($instr_1);
+$orc->use_instrument($instr_3);
+$orc->use_instrument($instr_1);
+$orc->use_instrument($instr_3);
 
 $orc->write('t/002-gotten.orc');
 
-isa_ok($orc, 'Csound::Orchestra');
 compare_ok('t/002-gotten.orc', 't/002-expected.orc', '002.orc should be equal');
