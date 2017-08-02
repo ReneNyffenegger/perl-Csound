@@ -67,6 +67,7 @@ sub new { #_{
   die unless $self->isa('Csound::ScoreStatement::f');
 
   $self->{table_nr  } = ++$_table_nr;
+  $self->{t_action  } = 0;             # Currently always 0
   $self->{gen_nr    } = $gen_nr;
   $self->{size      } = $size;
   $self->{parameters} =\@params;
@@ -83,7 +84,7 @@ sub score_text { #_{
   my $self = shift;
   die unless $self->isa('Csound::ScoreStatement::f');
 
-  return sprintf("f%d %d %d %s", $self->{table_nr}, $self->{size}, $self->{gen_nr}, join " ", @{$self->{parameters}});
+  return sprintf("f%d %d %d %d %s", $self->{table_nr}, $self->{t_action}, $self->{size}, $self->{gen_nr}, join " ", @{$self->{parameters}});
 
 } #_}
 #_}

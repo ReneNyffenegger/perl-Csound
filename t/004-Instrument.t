@@ -134,5 +134,5 @@ endin
 ST
  #_}
 
-is($score->{f_stmts}->{'10/8192/1/0.8/0.6/0.4'}->score_text, 'f1 8192 10 1 0.8 0.6 0.4', 'Score text correct');
-is($score->{f_stmts}->{'10/8192/1/0.7/0.3'    }->score_text, 'f2 8192 10 1 0.7 0.3'    , 'Score text correct');
+is($score->{f_stmts}->{'10/8192/1/0.8/0.6/0.4'}->score_text, 'f1 0 8192 10 1 0.8 0.6 0.4', 'Score text correct');
+is($score->{f_stmts}->{'10/8192/1/0.7/0.3'    }->score_text, 'f2 0 8192 10 1 0.7 0.3'    , 'Score text correct');

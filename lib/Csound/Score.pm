@@ -11,6 +11,7 @@ package Csound::Score;
 
 use warnings;
 use strict;
+use utf8;
 
 use Carp;
 
@@ -93,14 +94,22 @@ sub play { #_{
     croak "instrument plays a note, but $note is none" unless Csound::is_note($note);
   } #_}
 
-
   die unless $self->isa('Csound::Score');
 
   croak "First argument is not an instrument" unless $instr->isa('Csound::Instrument');
 
   $self->{orchestra}->use_instrument($instr);
 
-  my $i = $instr->i($t_start, $t_len, @_);
+  my $i;
+  if ($instr->plays_note) {
+    my $note = shift;
+    croak "Instrument plays notes, but $note is not a note" unless Csound::is_note($note);
+    my $pch  = Csound::note_to_pch($note);
+    $i = $instr->i($t_start, $t_len, $pch, @_);
+  }
+  else {
+    $i = $instr->i($t_start, $t_len, @_);
+  }
 
   die "i is not an Csound::ScoreStatement::i" unless $i->isa('Csound::ScoreStatement::i');
 
@@ -154,8 +163,33 @@ C<filename.orc> is written by calling C<< $self->{orchestra}->write("$filename.o
   my $self     = shift;
   my $filename = shift;
 
-  $self->{orchestra}->write("$filename.orc");
+  $self->{orchestra}->write("$filename.orc", $self);
 
+  open (my $sco_fh, '>', "$filename.sco") or croak "Could not open $filename.sco";
+
+  $self->_write_f_statements($sco_fh);
+  print $sco_fh "\n";
+
+  $self->_write_i_statements($sco_fh);
+
+  print $sco_fh "\ne\n";
+  close $sco_fh;
+} #_}
+sub _write_f_statements { #_{
+  my $self = shift;
+  my $fh   = shift;
+
+  for my $f_key (sort {$self->{f_stmts}{$a}->{table_nr} <=> $self->{f_stmts}{$b}->{table_nr}} keys %{$self->{f_stmts}}) {
+    print $fh $self->{f_stmts}{$f_key}->score_text(), "\n";
+  }
+} #_}
+sub _write_i_statements { #_{
+  my $self = shift;
+  my $fh   = shift;
+
+  for my $i (@{$self->{i_stmts}}) {
+    print $fh $i->score_text(), "\n";
+  }
 } #_}
 #_}
 #_{ POD: Copyright

@@ -100,23 +100,29 @@ sub write { #_{
 #_{ POD
 =head2 write
 
-    $orc->write('filename.orc');
+    $orc->write('filename.orc', $score);
 
 This method should not be called directly by the end user. The end user should call L<Csound::Score/write> instead.
+
+C<$score> is needed because some instruments need access to the score (notably for the table functions C<f1 8192 10 …>).
 
 =cut
 #_}
 
-  my $self = shift;
-  croak "$self is a " . ref($self) unless $self->isa('Csound::Orchestra');
-
+  my $self  = shift;
   my $orc_filename = shift;
+  my $score = shift;
+
+  croak "$self is a " . ref($self) unless $self->isa('Csound::Orchestra');
+  croak "score is not defined" unless defined $score;
+  croak "score is not a Csound::Score but a $score" unless $score->isa('Csound::Score');
+
   croak "No filename specified" unless $orc_filename;
 
   open (my $orc_fh, '>', $orc_filename) or croak "Could not open $orc_filename";
 
   $self->_write_header     ($orc_fh);
-  $self->_write_instruments($orc_fh);
+  $self->_write_instruments($orc_fh, $score);
 
   close $orc_fh;
   
@@ -142,7 +148,7 @@ sr     = 44100
 kr     =  4410
 ksmps  =    10
 nchnls =     2
-0dbfs  =     1
+;0dbfs =     1
 HEADER
 
 } #_}
@@ -157,13 +163,17 @@ An internal function.
 #_}
 
   my $self   = shift;
-  croak unless $self->isa('Csound::Orchestra');
+  croak 'self is not a Csound::Orchestra' unless $self->isa('Csound::Orchestra');
 
   my $fh_orc = shift;
 
+  my $score  = shift;
+  croak "score needed, but is undefined" unless defined $score;
+  croak "score needed" unless $score -> isa('Csound::Score');
+
   for my $instr_no (sort keys %{$self->{instruments}}) {
 
-    print $fh_orc "\n" . $self->{instruments}{$instr_no}->orchestra_text();
+    print $fh_orc "\n" . $self->{instruments}{$instr_no}->orchestra_text($score);
 
   }
 
