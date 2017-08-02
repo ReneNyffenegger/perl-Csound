@@ -2,8 +2,9 @@ use strict;
 use warnings;
 use utf8;
 
-use Test::More   tests => 12;
+use Test::More   tests => 14;
 use Test::Exception;
+use Test::Files;
 
 use Csound::Score;
 use Csound::Instrument;
@@ -59,3 +60,6 @@ is(scalar keys %{$score->{orchestra}->{instruments}}, 2, "Two instruments in orc
 
 
 $score->write('t/005-Score-gotten');
+
+compare_ok('t/005-Score-gotten.orc', 't/005-Score-expected.orc', '005-Score-*.orc should be equal');
+compare_ok('t/005-Score-gotten.sco', 't/005-Score-expected.sco', '005-Score-*.sco should be equal');
