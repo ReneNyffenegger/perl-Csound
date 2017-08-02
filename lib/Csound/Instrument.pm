@@ -195,7 +195,7 @@ the method needs the C<$score> parameter.
       croak "No score defined" unless defined $score;
       croak "No valid score passed" unless $score->isa('Csound::Score');
 
-      $score->f(@parameters)->{table_nr};
+      $score->f($gen_no, @parameters)->{table_nr};
     }gex;
 
     $orchestra_text .= $definition;

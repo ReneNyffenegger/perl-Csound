@@ -126,7 +126,7 @@ Probably called from L<< Csound::Instrument/orchestra_text >>
 
   croak unless $self->isa('Csound::Score');
 
-  my $f_key =join '-', @f_parameters;
+  my $f_key =join '/', @f_parameters;
   if (exists $self->{f_stmts}{$f_key}) {
     return $self->{f_stmts}{$f_key};
   }

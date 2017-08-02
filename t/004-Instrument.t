@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More   tests => 23;
+use Test::More   tests => 25;
 use Test::Exception;
 # use Test::Files;
 
@@ -66,7 +66,7 @@ is($i2_b->instrument_nr(), 2,   'Instrument number == 2');
 
 is($i1_a->score_text()   , "i1 2.2 0.3 $note 4.4 5.5");
 
-is($instr_1->orchestra_text(), <<ST, 'Check orchestra text instrument 1');
+is($instr_1->orchestra_text(), <<ST, 'Check orchestra text instrument 1'); #_{
 instr 1
 
   i_freq init cpspch(p4)
@@ -75,31 +75,31 @@ instr 1
 
 endin
 ST
-
-is($instr_2->orchestra_text(), <<ST, 'Check orchestra text instrument 2');
+ #_}
+is($instr_2->orchestra_text(), <<ST, 'Check orchestra text instrument 2'); #_{
 instr 2
 
   i_freq init cpspch(p4)
 
 endin
 ST
-
-is($instr_3->orchestra_text(), <<ST, 'Check orchestra text instrument 3');
+ #_}
+is($instr_3->orchestra_text(), <<ST, 'Check orchestra text instrument 3'); #_{
 instr 3
 
   i_freq init cpspch(p4)
 
 endin
 ST
-
-is($instr_4->orchestra_text(), <<ST, 'Check orchestra text instrument 4');
+ #_}
+is($instr_4->orchestra_text(), <<ST, 'Check orchestra text instrument 4'); #_{
 instr 4
 
 
 endin
 ST
-
-is($instr_5->orchestra_text(), <<ST, 'Check orchestra text instrument 5');
+ #_}
+is($instr_5->orchestra_text(), <<ST, 'Check orchestra text instrument 5'); #_{
 instr 5
 
   i_x init p4
@@ -107,9 +107,9 @@ instr 5
 
 endin
 ST
-
+ #_}
 my $score = Csound::Score->new();
-is($instr_6->orchestra_text($score), <<ST, 'Check orchestra text for instrument 6');
+is($instr_6->orchestra_text($score), <<ST, 'Check orchestra text for instrument 6'); #_{
 instr 6
 
   i_freq init cpspch(p4)
@@ -132,3 +132,7 @@ instr 6
 
 endin
 ST
+ #_}
+
+is($score->{f_stmts}->{'10/8192/1/0.8/0.6/0.4'}->score_text, 'f1 8192 10 1 0.8 0.6 0.4', 'Score text correct');
+is($score->{f_stmts}->{'10/8192/1/0.7/0.3'    }->score_text, 'f2 8192 10 1 0.7 0.3'    , 'Score text correct');

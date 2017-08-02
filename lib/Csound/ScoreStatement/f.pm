@@ -66,12 +66,24 @@ sub new { #_{
   bless $self, $class;
   die unless $self->isa('Csound::ScoreStatement::f');
 
-  $self->{table_nr} = ++$_table_nr;
-  $self->{gen_nr  } = $gen_nr;
-  $self->{size    } = $size;
-  $self->{params  } =\@params;
+  $self->{table_nr  } = ++$_table_nr;
+  $self->{gen_nr    } = $gen_nr;
+  $self->{size      } = $size;
+  $self->{parameters} =\@params;
 
   return $self;
+
+} #_}
+sub score_text { #_{
+#_{ POD
+=head2 new
+=cut
+#_}
+
+  my $self = shift;
+  die unless $self->isa('Csound::ScoreStatement::f');
+
+  return sprintf("f%d %d %d %s", $self->{table_nr}, $self->{size}, $self->{gen_nr}, join " ", @{$self->{parameters}});
 
 } #_}
 #_}
