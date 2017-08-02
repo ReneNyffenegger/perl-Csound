@@ -16,6 +16,7 @@ use Carp;
 
 use Csound;
 use Csound::Orchestra;
+use Csound::ScoreStatement::f;
 
 our $VERSION = $Csound::VERSION;
 #_{ Synopsis
@@ -59,8 +60,7 @@ sub new { #_{
 
   $self->{orchestra} = Csound::Orchestra->new();
   $self->{i_stmts}   = [];
-# $self->{f_stmts}   = {};
-
+  $self->{f_stmts}   = {};
 
   return $self;
 
@@ -107,6 +107,33 @@ sub play { #_{
   push @{$self->{i_stmts}}, $i;
 
   return $self;
+
+} #_}
+sub f { #_{
+#_{ POD
+=head2 f
+
+Create a L<< Csound::ScoreStatement::f >>.
+
+Probably called from L<< Csound::Instrument/orchestra_text >>
+
+=cut
+#_}
+
+  my $self = shift;
+
+  my @f_parameters = @_;
+
+  croak unless $self->isa('Csound::Score');
+
+  my $f_key =join '-', @f_parameters;
+  if (exists $self->{f_stmts}{$f_key}) {
+    return $self->{f_stmts}{$f_key};
+  }
+
+  $self->{f_stmts}{$f_key} = Csound::ScoreStatement::f->new(@f_parameters);
+
+  return $self->{f_stmts}{$f_key};
 
 } #_}
 sub write { #_{

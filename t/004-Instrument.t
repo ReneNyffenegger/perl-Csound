@@ -6,6 +6,7 @@ use Test::Exception;
 # use Test::Files;
 
 use Csound::Instrument;
+use Csound::Score;
 
 my $instr_1 = Csound::Instrument->new({parameters=>['param_foo', 'param_bar']});
 my $instr_2 = Csound::Instrument->new();
@@ -16,6 +17,9 @@ my $instr_6 = Csound::Instrument->new({definition=>'
 
   asig vco2 .01, 110
   kcut1 line 60, p3, 300
+  abla oscili xx, yy, @FUNCTABLE(10, 8192, 1, 0.8, 0.6, 0.4), 0.5
+  afoo oscil  zz, ab, @FUNCTABLE(10, 8192, 1, 0.7, 0.3     ), 0.6
+  abar oscil  de, fg, @FUNCTABLE(10, 8192, 1, 0.8, 0.6, 0.4), 0.7
   kresonance1 = 3
   inumlayer1 = 3
   asig1 lowresx asig, kcut1, kresonance1, inumlayer1
@@ -104,7 +108,8 @@ instr 5
 endin
 ST
 
-is($instr_6->orchestra_text(), <<ST, 'Check orchestra text for instrument 6');
+my $score = Csound::Score->new();
+is($instr_6->orchestra_text($score), <<ST, 'Check orchestra text for instrument 6');
 instr 6
 
   i_freq init cpspch(p4)
@@ -112,6 +117,9 @@ instr 6
 
   asig vco2 .01, 110
   kcut1 line 60, p3, 300
+  abla oscili xx, yy, 1, 0.5
+  afoo oscil  zz, ab, 2, 0.6
+  abar oscil  de, fg, 1, 0.7
   kresonance1 = 3
   inumlayer1 = 3
   asig1 lowresx asig, kcut1, kresonance1, inumlayer1

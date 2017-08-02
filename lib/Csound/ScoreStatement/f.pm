@@ -56,12 +56,20 @@ sub new { #_{
 
   state $_table_nr = 0;
 
-  my $class = shift;
+  my $class    = shift;
+  my $gen_nr   = shift;
+  my $size     = shift;
+  my @params   = @_;
+
   my $self  = {};
 
   bless $self, $class;
+  die unless $self->isa('Csound::ScoreStatement::f');
 
   $self->{table_nr} = ++$_table_nr;
+  $self->{gen_nr  } = $gen_nr;
+  $self->{size    } = $size;
+  $self->{params  } =\@params;
 
   return $self;
 

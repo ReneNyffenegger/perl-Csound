@@ -148,14 +148,19 @@ sub orchestra_text { #_{
 #_{ POD
 =head2 orchestra_text
 
-    my $txt = $instr->orchestra_text();
+    my $score = Csound::Score->new(…);
+    my $txt = $instr->orchestra_text($score);
 
 Returns the text to be written into the score.
+
+Sometimes, the instrument needs to have access to the score (notably for the f statements required in the C<oscil> opcode family). Therefore,
+the method needs the C<$score> parameter.
 
 =cut
 #_}
 
-  my $self = shift;
+  my $self  = shift;
+  my $score = shift;
   die unless $self->isa('Csound::Instrument');
 
   my $orchestra_text = sprintf("instr %d\n\n", $self->{nr});
@@ -174,8 +179,26 @@ Returns the text to be written into the score.
 
   if ($self->{definition}) {
 
-    $orchestra_text .= $self->{definition};
+    my $definition = $self->{definition};
+#   $orchestra_text .= $self->{definition};
 
+    $definition =~ s{
+      \@FUNCTABLE\(\ *(\d+)((?:\ *,\ *[0-9.]+)+)\ *\)
+    }
+    {
+      my $gen_no = $1;
+      my $parameters = $2;
+      $parameters =~ s/^ *, *//;
+      my @parameters = split / *, */, $parameters;
+#     $parameters = join ' x ', @parameters;
+ 
+      croak "No score defined" unless defined $score;
+      croak "No valid score passed" unless $score->isa('Csound::Score');
+
+      $score->f(@parameters)->{table_nr};
+    }gex;
+
+    $orchestra_text .= $definition;
   }
 
 # $orchestra_text .= "\n" if @{$self->{parameters}};
