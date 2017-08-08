@@ -57,7 +57,8 @@ sub new { #_{
 
   die unless $self->isa('Csound::Composition');
 
-  $self->{score} = Csound::Score->new();
+  $self->{score    } = Csound::Score->new();
+  $self->{orchestra} = Csound::Orchestra->new();
 
   return $self;
 
@@ -78,8 +79,9 @@ sub play { #_{
   die unless $self->isa('Csound::Composition');
 
   my $instr = shift;
-  carp "play requires an instrument" unless $instr->isa('Csound::Instrument');
+  croak "play requires an instrument" unless $instr->isa('Csound::Instrument');
 
+  $self->{orchestra}->use_instrument($instr);
   $self->{score}->play($instr, @_);
 
 } #_}
@@ -102,7 +104,14 @@ Writes C<filename.orc> and C<filename.sco>.
 
   my $filename_without_suffix = shift;
 
-  $self->{score}->write($filename_without_suffix);
+  #
+  #  Note Csound::Orchestra::write uses a Csound::Score reference ($self->{score})
+  #  because it might write to the Csound::Score (notably the f statements.).
+  #  Therefore, $self->{orchestra}->write() must be called before
+  #  $self->{score}->write().
+  #
+  $self->{orchestra}->write($filename_without_suffix, $self->{score});
+  $self->{score    }->write($filename_without_suffix);
 
 } #_}
 #_}

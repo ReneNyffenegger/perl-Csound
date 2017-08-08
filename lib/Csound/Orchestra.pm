@@ -109,17 +109,17 @@ C<$score> is needed because some instruments need access to the score (notably f
 =cut
 #_}
 
-  my $self  = shift;
-  my $orc_filename = shift;
-  my $score = shift;
+  my $self                    = shift;
+  my $filename_without_suffix = shift;
+  my $score                   = shift;
 
   croak "$self is a " . ref($self) unless $self->isa('Csound::Orchestra');
   croak "score is not defined" unless defined $score;
   croak "score is not a Csound::Score but a $score" unless $score->isa('Csound::Score');
 
-  croak "No filename specified" unless $orc_filename;
+  croak "No filename specified" unless $filename_without_suffix;
 
-  open (my $orc_fh, '>', $orc_filename) or croak "Could not open $orc_filename";
+  open (my $orc_fh, '>', "$filename_without_suffix.orc") or croak "Could not open $filename_without_suffix.orc";
 
   $self->_write_header     ($orc_fh);
   $self->_write_instruments($orc_fh, $score);
@@ -172,9 +172,7 @@ An internal function.
   croak "score needed" unless $score -> isa('Csound::Score');
 
   for my $instr_no (sort keys %{$self->{instruments}}) {
-
     print $fh_orc "\n" . $self->{instruments}{$instr_no}->orchestra_text($score);
-
   }
 
 

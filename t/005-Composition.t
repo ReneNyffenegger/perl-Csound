@@ -31,8 +31,8 @@ is(scalar keys %{$composition->{score}->{orchestra}->{instruments}}, 0, "No inst
 
 
 my $t = 0;                                              is(scalar @{$composition->{score}->{i_stmts}}, 0, "nof i_stmts: 0");
-$composition->play($instr_1, $t++ * 0.25, 0.25, 'c6' ); is(scalar @{$composition->{score}->{i_stmts}}, 1, "nof i_stmts: 1"); is(scalar keys %{$composition->{score}->{orchestra}->{instruments}}, 1, "One instrument in orchestra");
-$composition->play($instr_1, $t++ * 0.25, 0.25, 'c♯6');                                                                      is(scalar keys %{$composition->{score}->{orchestra}->{instruments}}, 1, "One instrument in orchestra");
+$composition->play($instr_1, $t++ * 0.25, 0.25, 'c6' ); is(scalar @{$composition->{score}->{i_stmts}}, 1, "nof i_stmts: 1"); is(scalar keys %{$composition->{orchestra}->{instruments}}, 1, "One instrument in orchestra");
+$composition->play($instr_1, $t++ * 0.25, 0.25, 'c♯6');                                                                      is(scalar keys %{$composition->{orchestra}->{instruments}}, 1, "One instrument in orchestra");
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'd6' );
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'e♭6');
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'e6' );
@@ -58,7 +58,7 @@ throws_ok
 
 $composition->play($instr_2, 0, 1);
 $composition->play($instr_2, 2, 1);
-is(scalar keys %{$composition->{score}->{orchestra}->{instruments}}, 2, "Two instruments in orchestra");
+is(scalar keys %{$composition->{orchestra}->{instruments}}, 2, "Two instruments in orchestra");
 
 
 $composition->write('t/005-Composition-gotten');

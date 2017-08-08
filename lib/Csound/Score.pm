@@ -48,10 +48,9 @@ sub new { #_{
 
     my $score = Csound::Score->new();
 
-
 =cut
 #_}
-
+  
   my $class  = shift;
 # my $params = shift // {};
 
@@ -59,7 +58,7 @@ sub new { #_{
 
   bless $self, $class;
 
-  $self->{orchestra} = Csound::Orchestra->new();
+# $self->{orchestra} = Csound::Orchestra->new();
   $self->{i_stmts}   = [];
   $self->{f_stmts}   = {};
 
@@ -74,8 +73,6 @@ sub play { #_{
     …
 
     $orchestra->play($instr, $t_start, $t_len, "c♯3");
-
-
 
 =cut
 #_}
@@ -98,7 +95,7 @@ sub play { #_{
 
   croak "First argument is not an instrument" unless $instr->isa('Csound::Instrument');
 
-  $self->{orchestra}->use_instrument($instr);
+# $self->{orchestra}->use_instrument($instr);
 
   my $i;
   if ($instr->plays_note) {
@@ -135,6 +132,7 @@ Probably called from L<< Csound::Instrument/orchestra_text >>
 
   croak unless $self->isa('Csound::Score');
 
+
   my $f_key =join '/', @f_parameters;
   if (exists $self->{f_stmts}{$f_key}) {
     return $self->{f_stmts}{$f_key};
@@ -147,14 +145,14 @@ Probably called from L<< Csound::Instrument/orchestra_text >>
 } #_}
 sub write { #_{
 #_{ POD
-=head2 play
+=head2 write
 
     $score->write('filename');
 
-
 Writes C<filename.sco> and C<filename.orc>.
 
-C<filename.orc> is written by calling C<< $self->{orchestra}->write("$filename.orc") >>
+C<filename.orc> is written by calling C<< $self->{orchestra}->write("$filename.orc") >> which
+in turn is called by C<< $composition -> write($filename) >>.
 
 
 =cut
@@ -163,7 +161,7 @@ C<filename.orc> is written by calling C<< $self->{orchestra}->write("$filename.o
   my $self     = shift;
   my $filename = shift;
 
-  $self->{orchestra}->write("$filename.orc", $self);
+# $self->{orchestra}->write("$filename.orc", $self);
 
   open (my $sco_fh, '>', "$filename.sco") or croak "Could not open $filename.sco";
 
