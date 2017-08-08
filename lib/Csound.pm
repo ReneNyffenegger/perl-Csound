@@ -33,7 +33,7 @@ our $VERSION = 0.01;
 #_}
 sub is_note { #_{
 #_{ POD
-=head2 new
+=head2 is_note
 
     $is_a_note     = Csound::is_note('d5');
     $is_a_note     = Csound::is_note('f11');
