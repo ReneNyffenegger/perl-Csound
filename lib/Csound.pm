@@ -19,8 +19,12 @@ our $VERSION = 0.01;
 
 =head1 SYNOPSIS
 
-    use Csound::Orchestra;
+    use Csound::Composition;
     use Csound::Instrument;
+
+    my $composition    = Csound::Composition->new();
+    my $instrument_one = Csound::Instrument->new(…);
+    my $instrument_two = Csound::Instrument->new(…);
 
     # go from there …
 
@@ -100,10 +104,21 @@ sub note_to_pch {
 #_{ POD: Copyright
 
 =head1 Copyright
+
 Copyright © 2017 René Nyffenegger, Switzerland. All rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
 copy of the full license at: L<http://www.perlfoundation.org/artistic_license_2_0>
+
+=cut
+
+#_}
+#_{ Source Code
+
+=head1 Source Code
+
+The source code is on L<< github|https://github.com/ReneNyffenegger/perl-Csound >>. Meaningful pull requests are welcome.
+
 =cut
 
 #_}
