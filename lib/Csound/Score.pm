@@ -143,6 +143,14 @@ Probably called from L<< Csound::Instrument/orchestra_text >>
   return $self->{f_stmts}{$f_key};
 
 } #_}
+sub t { #_{
+  my $self = shift;
+  my $t    = shift;
+
+  croak "need Csound::ScoreStatement::t" unless $t->isa('Csound::ScoreStatement::t');
+
+  $self->{t} = $t;
+} #_}
 sub write { #_{
 #_{ POD
 =head2 write
@@ -161,12 +169,15 @@ in turn is called by C<< $composition -> write($filename) >>.
   my $self     = shift;
   my $filename = shift;
 
-# $self->{orchestra}->write("$filename.orc", $self);
 
   open (my $sco_fh, '>', "$filename.sco") or croak "Could not open $filename.sco";
 
   $self->_write_f_statements($sco_fh);
   print $sco_fh "\n";
+
+  if ($self->{t}) {
+    print $sco_fh $self->{t}->score_text, "\n"; 
+  }
 
   $self->_write_i_statements($sco_fh);
 

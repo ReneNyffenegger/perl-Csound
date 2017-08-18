@@ -11,6 +11,8 @@ use Csound::Instrument;
 
 my $composition = Csound::Composition->new();
 
+my $tempo = $composition->t(90);
+
 isa_ok($composition, 'Csound::Composition', 'composition is a Csound::Composition');
 
 my $instr_1 = Csound::Instrument -> new({definition =>'
@@ -41,6 +43,7 @@ $composition->play($instr_1, $t++ * 0.25, 0.25, 'e♭6');
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'e6' );
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'f6' );
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'g♭6');
+$tempo->tempo($t, 120);
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'g6' );
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'g♯6');
 $composition->play($instr_1, $t++ * 0.25, 0.25, 'a6' );

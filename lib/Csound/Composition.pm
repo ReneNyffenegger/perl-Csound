@@ -14,6 +14,7 @@ use strict;
 use Carp;
 
 use Csound::Score;
+use Csound::ScoreStatement::t;
 
 our $VERSION = $Csound::VERSION;
 #_{ Synopsis
@@ -62,6 +63,28 @@ sub new { #_{
 
   return $self;
 
+} #_}
+sub t { #_{
+#_{ POD
+=head2 t
+
+    my $t = $composition->t($start_tempo);
+
+Returns a L<< t statement|Csound::ScoreStatement::t >> which can be used to control the tempo at various beats in the composition:
+
+    $t->tempo($t₁, 70); # Increase tempo from t₁ 
+    $t->tempo($t₂, 90); #   until
+    $t->tempo($t₃, 95); # t₃.
+
+=cut
+
+  my $self        = shift;
+  my $start_tempo = shift;
+
+  my $t    = Csound::ScoreStatement::t->new($start_tempo);
+  $self->{score}->t($t);
+
+#_}
 } #_}
 sub play { #_{
 #_{ POD
