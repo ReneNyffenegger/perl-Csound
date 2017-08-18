@@ -42,19 +42,28 @@ sub new { #_{
 #_{ POD
 =head2 new
 
-    my $instr = Csound::Instrument->new({
-      parameters => ['amplitude', 'foo_1', 'foo_2']
-    });
+    my $composition = Csound::Composition->new(…);
 
-Most instrument play notes. However, to indicate that an instrument doesn't play a note,
+    my $instr = Csound::Instrument->new(
+      {
+        composition => $composition,
+        parameters  => ['amplitude', 'foo_1', 'foo_2']
+      }
+    );
+
+If the parameter C<composition> is passed with a reference to a L<< Csound::Composition >>, the instrument's L</play> method is shorthand for
+C<< $composition->play($instr, …) >>.
+
+Most instrument play notes. However, to indicate that an instrument doesn't play a note (such as a high hat or a noise etc.),
 the flag C<no_note> can be given.
 
-    my $instr = Csound::Instrument->new({
-      parameters => ['amplitude', 'foo_1', 'foo_2'],
-      no_note => 1
-    });
-      
-
+    my $instr = Csound::Instrument->new(
+      $composition,   
+      {
+        parameters => ['amplitude', 'foo_1', 'foo_2'],
+        no_note => 1
+      }
+    );
 
 =cut
 #_}
@@ -67,10 +76,14 @@ the flag C<no_note> can be given.
   my $self   = {};
 
   if ($params->{parameters}) {
-    $self -> {parameters} = delete $params->{parameters}
+    $self->{parameters} = delete $params->{parameters}
   }
   else {
-    $self -> {parameters} = [];
+    $self->{parameters} = [];
+  }
+  if ($params->{composition}) {
+    croak "composition must be a Csound::Composition" unless $params->{composition}->isa('Csound::Composition');
+    $self->{composition} = delete $params->{composition};
   }
 
   $self->{no_note} = delete $params->{no_note} // 0;
@@ -95,6 +108,25 @@ sub definition { #_{
   my $definition = shift;
 
   $self->{definition} = $definition;
+} #_}
+sub play { #_{
+#_{ POD
+=head2 new
+
+    $instr->play($t_start, $duration, 'f♯5', …);
+
+When the instrument was L<constructed|/new> with the C<composition> parameter, this is a shorthand for
+
+    $composition->play($instr, $t_start, $duration, 'f♯5', …);
+
+=cut
+#_}
+  
+  my $self = shift;
+
+  croak "I don't have a composition to play this instrument on" unless $self->{composition};
+  $self->{composition}->play($self, @_);
+
 } #_}
 sub plays_note { #_{
 #_{ POD

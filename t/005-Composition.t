@@ -17,7 +17,10 @@ my $instr_1 = Csound::Instrument -> new({definition =>'
   asig oscili 5000, i_freq, @FUNCTABLE(10, 8192, 1, 0.8, 0.6, 0.4)
   outs asig, asig
 '});
-my $instr_2 = Csound::Instrument -> new({no_note=>1, definition=>'
+my $instr_2 = Csound::Instrument -> new({
+    composition=>$composition,
+    no_note=>1,
+    definition=>'
 
   asig oscili 2000, 440, @FUNCTABLE(10, 4096, 1)
   outs asig, asig
@@ -56,8 +59,10 @@ throws_ok
    qr /instrument plays a note, but none was given/,
    '$instrument must play a note';
 
-$composition->play($instr_2, 0, 1);
-$composition->play($instr_2, 2, 1);
+# $composition->play($instr_2, 0, 1);
+# $composition->play($instr_2, 2, 1);
+$instr_2->play(0, 1);
+$instr_2->play(2, 1);
 is(scalar keys %{$composition->{orchestra}->{instruments}}, 2, "Two instruments in orchestra");
 
 
