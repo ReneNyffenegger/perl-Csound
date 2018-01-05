@@ -2,3 +2,7 @@ http://www.csounds.com/manual/html/i.html  -- Example 1083
 http://csoundjournal.com/2005fall/tiedNotes.html
 http://csounds.com/stevenyi/ - PhaseShaper
 http://csounds.com/stevenyi/ - SHARC
+
+Building fails, probably because csound is not installed
+on testers's machines:
+  https://www.cpantesters.org/distro/C/Csound.html?oncpan=1&distmat=1&version=0.01&grade=3
